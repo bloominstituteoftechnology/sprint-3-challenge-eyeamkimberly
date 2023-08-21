@@ -103,37 +103,46 @@
       //      * When engaging the safety, return "Safety enabled!"
       //      * When disengaging the safety, return "Safety disabled!"
       // 🌟 HINT: instances need to keep track of their maximum capacity as well as their current capacity
-    constructor(totalProjectiles){
-      this.totalCapacity = totalProjectiles
-      this.currentCapacity = totalProjectiles
-      this.safetyOn = true
+
+  constructor(capacity) {
+    this.maxCapacity = capacity;
+    this.currentCapacity = capacity;
+    this.safetyOn = true;
+  }
+
+  shoot() {
+    if (this.currentCapacity > 0 && !this.safetyOn) {
+      this.currentCapacity--;
+      return "Bang!";
+    } else {
+      return "Click!";
     }
-    shoot(){
-      if (this.currentCapacity > 0 && !this.safetyOn){
-        this.currentCapacity--
-        return "Bang!"
-      } else {
-        return "Click!"
-      }
+  }
+
+  reload(amount) {
+    if (typeof amount !== "number" || amount <= 0) {
+      return "Error reloading!";
     }
-    reload(amount){
-      if (typeof number !== "number" || number < 0){
-        return "Error reloading!"
-      }
-      this.currentCapacity = Math.min(this.totalCapacity, this.currentCapacity + number)
-      return `${this.currentCapacity} projectiles left!`
+
+    this.currentCapacity += amount;
+    if (this.currentCapacity > this.maxCapacity) {
+      this.currentCapacity = this.maxCapacity;
     }
-    toggleSafety(){
-      this.safetyOn = !this.safetyOn
-      if (this.safetyOn){
-        return "Safety enabled!"
-      }else{
-        return "Safety disabled!"
-      }
+
+    return `${this.currentCapacity} projectiles left!`;
+  }
+
+  toggleSafety() {
+    this.safetyOn = !this.safetyOn;
+    if (this.safetyOn) {
+      return "Safety enabled!";
+    } else {
+      return "Safety disabled!";
     }
-    }
-    const myNerfGun = new NerfGun(10)
-    console.log(myNerfGun.toggleSafety())
+  }
+}
+
+    
 
     // 👉 CHALLENGE 3 EBook
     class EBook {
@@ -204,33 +213,49 @@
       //      console.log(list) // prints ["a"]
       // 👉 HINT: if you are not feeling confident with map and filter, solve the problem with for loops,
       //      and with the piece of mind of all tests passing, refactor to use map/filter
-    constructor(...antNames){
-      this.ants = antNames.map(name => ({name, health: 100}))
+    
+  constructor(...antNames) {
+    this.ants = antNames.map(name => ({ name, health: 100 }));
+  }
+
+  work() {
+    if (this.ants.length === 0) {
+      return "No ants here. Did you work them to death?";
     }
-    work(){
-      if (this.ants.length === 0){
-        return "No ants here. Did you work them to death?"
-      }
-      const antCount = this.ants.length
-      this.ants = this.ants.map(ant => {
-        ant.health -= 20
-        if (ant.health <= 0){
-          return null
-        }
-        return ant
-      }).filter(ant => ant !==null)
-      return `${antCount} ant${antCount !== 1 ? 's' : ''} starting work!`
-    }feed(antName){
-      const antToFeed = this.ants.find(ant => ant.name === antName)
-      if (antToFeed){
-        antToFeed.health += 15
-        return "Yum!"
-      }else{
-        return `${antName} not found!`
+
+    const numAnts = this.ants.length;
+    for (let i = 0; i < this.ants.length; i++) {
+      this.ants[i].health -= 20;
+      if (this.ants[i].health <= 0) {
+        this.ants.splice(i, 1);
+        i--;
       }
     }
 
+    return `${numAnts} ants starting work!`;
+  }
+
+  feed(antName) {
+    let foundAnt = false;
+    for (let i = 0; i < this.ants.length; i++) {
+      if (this.ants[i].name === antName) {
+        this.ants[i].health += 15;
+        foundAnt = true;
+      }
     }
+
+    if (foundAnt) {
+      return "Yum!";
+    } else {
+      return `${antName} not found!`;
+    }
+  }
+}
+
+      
+      
+      
+  
 
     // 🧪 TESTS, do not make any changes below this line ===================
     // 🧪 TESTS, do not make any changes below this line ===================
